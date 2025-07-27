@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maca's Cafe - Start</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #3e2723;
+      font-family: 'Courier New', Courier, monospace;
+      color: #fff;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    button {
+      background: #6d4c41;
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      font-size: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .loading-bar {
+      width: 200px;
+      background: #795548;
+      border: 2px solid #fff;
+      margin: 20px 0;
+      display: none;
+    }
+    .loading-fill {
+      height: 20px;
+      background: #d7ccc8;
+      width: 0%;
+    }
+    #loadingText {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="center">
+    <h1>Maca's Cafe</h1>
+    <button id="startBtn">Start</button>
+    <div class="loading-bar" id="loadingBar">
+      <div class="loading-fill" id="loadingFill"></div>
+    </div>
+    <p id="loadingText">0%</p>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingFill = document.getElementById('loadingFill');
+    const loadingText = document.getElementById('loadingText');
+
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      loadingBar.style.display = 'block';
+      loadingText.style.display = 'block';
+
+      let percent = 0;
+      const interval = setInterval(() => {
+        percent++;
+        loadingFill.style.width = percent + '%';
+        loadingText.textContent = percent + '%';
+
+        if (percent >= 100) {
+          clearInterval(interval);
+          window.location.href = 'shop.html';
+        }
+      }, 30);
+    });
+
+    // Particle animation
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 3 + 1,
+        dx: (Math.random() - 0.5) * 2,
+        dy: (Math.random() - 0.5) * 2
+      });
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#d7ccc8';
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
+</body>
+</html>
